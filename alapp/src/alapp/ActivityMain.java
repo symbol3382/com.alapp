@@ -4,21 +4,26 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
+
+import alapp.config.UIColorConfig;
+import alapp.panel.AdminPanel;
+import alapp.panel.UserPanel;
+import alapp.panel.UserRegistrationPanel;
+import alapp.service.UserService;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
 public class ActivityMain {
 
-	static JFrame frame;
+	private JFrame frame;
 	private JTextField tfUsername;
 	private JPasswordField pfPassword;
 	private JLabel lblAppName;
@@ -28,6 +33,8 @@ public class ActivityMain {
 	private JButton btnCreateAnAccount;
 	private JButton btnForgotPassword;
 	private JButton btnColorMode;
+
+	UserService userService;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -43,6 +50,79 @@ public class ActivityMain {
 
 	public ActivityMain() {
 		initialize();
+	}
+
+	/* 
+	 * to be called after logout
+	 */
+	public ActivityMain(JFrame frame) {
+		this.frame = frame;
+		initialize();
+	}
+	
+	private void initialize() {
+		declareComponent();
+		setFont();
+		setBounds();
+		UIColorConfig.lightTheme();
+		setColor();
+		setBackground();
+		addComponent();
+
+		frame.setLocationRelativeTo(frame);
+		frame.setVisible(true);
+
+		/* Event Handling */
+
+		btnLogin.addActionListener(new ActionListener() { // Login button
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String username = tfUsername.getText();
+				String userPassword = String.valueOf(pfPassword.getPassword());
+
+				userService = new UserService();
+				String userTypeForVerification = userService.checkUserForLogin(username, userPassword);
+
+				if (userTypeForVerification.equals("U")) {
+					UserPanel userPanel = new UserPanel(userService);
+					userPanel.setVisible(true, frame);
+					frame.setVisible(false);
+				} else if (userTypeForVerification.equals("A")) {
+					AdminPanel adminPane = new AdminPanel(userService.getUser());
+					adminPane.setVisible(true, frame);
+					frame.setVisible(false);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Invalid Details !", "Username password did not match",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		btnCreateAnAccount.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				frame.setVisible(false);
+				new UserRegistrationPanel(frame);
+			}
+		});
+
+		btnColorMode.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				btnColorMode.setText(UIColorConfig.changeButton());
+				setColor();
+			}
+		});
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				setColor();
+			}
+		});
+
 	}
 
 	private void declareComponent() {
@@ -112,101 +192,23 @@ public class ActivityMain {
 		btnColorMode.setBackground(null);
 	}
 
-	private void initialize() {
-		declareComponent();
-		setFont();
-		setBounds();
-		UI.lightTheme();
-		setColor();
-		setBackground();
-		addComponent();
-		
-		/* Event Handling */
-
-		btnLogin.addActionListener(new ActionListener() { // Login button
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				String userName = tfUsername.getText();
-				String userPass = String.valueOf(pfPassword.getPassword());
-
-				Connection connection = DBInfo.getConnection();
-				String query = "SELECT `id`,`user_type` FROM `user_information` WHERE `username` = ? AND `password` = ?";
-				try {
-					PreparedStatement preparedStatement = connection.prepareStatement(query);
-					preparedStatement.setString(1, userName);
-					preparedStatement.setString(2, userPass);
-
-					ResultSet resultSet = preparedStatement.executeQuery();
-					if (resultSet.next()) {
-						if (resultSet.getString(2).equals("U")) {
-							DBMethod.userName = userName;
-							DBMethod.userId = resultSet.getString(1);
-							UserLogin userLogin = new UserLogin();
-							userLogin.setVisible(true, frame);
-							frame.setVisible(false);
-						} else {
-							AdminPane adminPane = new AdminPane(resultSet.getString(1));
-							adminPane.setVisible(true);
-							frame.setVisible(false);
-						}
-					} else {
-						JOptionPane.showMessageDialog(null, "Invalid Details !", "Username password did not match",
-								JOptionPane.ERROR_MESSAGE);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
-		btnCreateAnAccount.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				UserRegistration userRegistration = new UserRegistration();
-				userRegistration.frame.setLocationRelativeTo(frame);
-				userRegistration.frame.setVisible(true);
-				frame.setVisible(false);
-			}
-		});
-
-		btnColorMode.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				btnColorMode.setText(UI.changeButton());
-				setColor();
-			}
-		});
-
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent arg0) {
-				setColor();
-			}
-		});
-
-		ActivityMain.frame.setLocationRelativeTo(ActivityMain.frame);
-		ActivityMain.frame.setVisible(true);
-
-	}
-
 	public void setColor() {
-		frame.getContentPane().setBackground(UI.getWallColor());
+		frame.getContentPane().setBackground(UIColorConfig.getWallColor());
 
-		lblUsername.setForeground(UI.getTextColor());
-		lblPassword.setForeground(UI.getTextColor());
+		lblUsername.setForeground(UIColorConfig.getTextColor());
+		lblPassword.setForeground(UIColorConfig.getTextColor());
 
-		tfUsername.setForeground(UI.getTextColor());
-		tfUsername.setCaretColor(UI.getTextColor());
-		pfPassword.setForeground(UI.getTextColor());
-		pfPassword.setCaretColor(UI.getTextColor());
+		tfUsername.setForeground(UIColorConfig.getTextColor());
+		tfUsername.setCaretColor(UIColorConfig.getTextColor());
+		pfPassword.setForeground(UIColorConfig.getTextColor());
+		pfPassword.setCaretColor(UIColorConfig.getTextColor());
 
-		btnLogin.setForeground(UI.getTextColor());
+		btnLogin.setForeground(UIColorConfig.getTextColor());
 
-		btnCreateAnAccount.setForeground(UI.getTextColor());
-		btnForgotPassword.setForeground(UI.getTextColor());
+		btnCreateAnAccount.setForeground(UIColorConfig.getTextColor());
+		btnForgotPassword.setForeground(UIColorConfig.getTextColor());
 
-		btnColorMode.setForeground(UI.getTextColor());
-		lblAppName.setForeground(UI.getThemeColor());
+		btnColorMode.setForeground(UIColorConfig.getTextColor());
+		lblAppName.setForeground(UIColorConfig.getThemeColor());
 	}
 }
