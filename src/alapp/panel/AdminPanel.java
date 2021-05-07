@@ -9,26 +9,26 @@ import java.awt.GridLayout;
 
 public class AdminPanel {
 
-	private User admin;
-	private JFrame frame;
+    private User admin;
+    private JFrame frame;
 
-	public AdminPanel(User admin) {
-		this.admin = admin;
-		initialize();
-	}
+    public AdminPanel(User admin) {
+        this.admin = admin;
+        initialize();
+    }
 
-	public void setVisible(boolean set, Frame frame) {
-		frame.setVisible(set);
-		frame.setLocationRelativeTo(frame);
-	}
+    public void setVisible(boolean set, Frame frame) {
+        frame.setVisible(set);
+        frame.setLocationRelativeTo(frame);
+    }
 
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new GridLayout(2, 2));
-		frame.setLocationRelativeTo(frame);
-	}
+    private void initialize() {
+        frame = new JFrame();
+        frame.setBounds(100, 100, 450, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(new GridLayout(2, 2));
+        frame.setLocationRelativeTo(frame);
+    }
 
 //	 To be use 
 //	private void updateIpNumber() {
