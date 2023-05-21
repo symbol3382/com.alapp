@@ -28,7 +28,17 @@ public class InvitationService {
 	public DefaultListModel<User> getSendRequestsListModel() {
 		DefaultListModel<User> sendRequestListModel = new DefaultListModel<>();
 		try {
-			String query = "SELECT `user_information`.`id`, `user_information`.`first_name`,`user_information`.`last_name`,`user_information`.`username`,`user_information`.`active` FROM `user_information` INNER JOIN `invitation` ON `user_information`.id = `invitation`.to_id WHERE `invitation`.`from_id`=?";
+			String query = "SELECT "
+					+ "`user_information`.`id`, "
+					+ "`user_information`.`first_name`, "
+					+ "`user_information`.`last_name`, "
+					+ "`user_information`.`username`,"
+					+ "`user_information`.`active` "
+					+ "FROM "
+						+ "`user_information` "
+					+ "INNER JOIN `invitation` "
+						+ "ON `user_information`.id = `invitation`.to_id "
+					+ "WHERE `invitation`.`from_id`=?";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, user.getId());
 			resultSet = preparedStatement.executeQuery();

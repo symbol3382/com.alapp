@@ -16,7 +16,7 @@ public class DatabaseConfig {
 	}
 	public static Connection getConnection() {
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://"+IP+":3306/alapp", "root", "");
+			connection = DriverManager.getConnection("jdbc:mysql://"+IP+":3306/alapp", "root", "11221122");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}

@@ -52,14 +52,14 @@ public class ActivityMain {
 		initialize();
 	}
 
-	/* 
+	/*
 	 * to be called after logout
 	 */
 	public ActivityMain(JFrame frame) {
 		this.frame = frame;
 		initialize();
 	}
-	
+
 	private void initialize() {
 		declareComponent();
 		setFont();
@@ -82,6 +82,7 @@ public class ActivityMain {
 				String userPassword = String.valueOf(pfPassword.getPassword());
 
 				userService = new UserService();
+				
 				String userTypeForVerification = userService.checkUserForLogin(username, userPassword);
 
 				if (userTypeForVerification.equals("U")) {
@@ -100,7 +101,6 @@ public class ActivityMain {
 		});
 
 		btnCreateAnAccount.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent arg0) {
 				frame.setVisible(false);
 				new UserRegistrationPanel(frame);

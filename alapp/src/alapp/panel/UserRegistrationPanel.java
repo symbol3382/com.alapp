@@ -42,6 +42,7 @@ public class UserRegistrationPanel {
 	UserService userService;
 
 	public UserRegistrationPanel(JFrame activityFrame) {
+		System.out.println("here we are");
 		this.activityFrame = activityFrame;
 		frame = new JFrame();
 		frame.setBounds(100, 100, 500, 390);
@@ -67,11 +68,11 @@ public class UserRegistrationPanel {
 
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
 				signup();
-
 			}
 		});
+		
+		frame.setVisible(true);
 
 	}
 

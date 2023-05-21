@@ -34,7 +34,6 @@ public class UserChatSelectPanel extends JPanel {
 	JFrame frame;
 
 	public DefaultComboBoxModel<User> getDcbmFriendsList() {
-		
 		return dcbmFriendsList;
 	}
 	

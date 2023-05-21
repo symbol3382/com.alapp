@@ -4,22 +4,26 @@ import javax.swing.JPanel;
 
 import alapp.config.UIColorConfig;
 import alapp.model.User;
+import alapp.service.AppService;
 import alapp.service.ConnectionService;
 import alapp.service.UserPortService;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class UserFriendDetailPanel extends JPanel {
@@ -106,12 +110,11 @@ public class UserFriendDetailPanel extends JPanel {
 		lblFriendName = new JLabel("Select friend to chat");
 		lblUsername = new JLabel("");
 		lblStatus = new JLabel("Status");
-		lblStatus.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		lblStatus.setFont(AppService.getAppFont(11f));
 		lblCurrentStatusIcon = new JLabel("");
-		lblCurrentStatusIcon
-				.setIcon(new ImageIcon("C:\\Users\\symbol\\Documents\\RAT\\alapp\\assets\\online_status.png"));
+		lblCurrentStatusIcon.setIcon(new ImageIcon("assets/online_status.png"));
 		lblCurrentStatus = new JLabel("");
-		lblCurrentStatus.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		lblCurrentStatus.setFont(AppService.getAppFont(11f));
 		btnStartChat = new JButton("Start Chat");
 		btnUnfriend = new JButton("Unfriend");
 		lblFriendName.setBounds(10, 10, 250, 30);
@@ -121,17 +124,33 @@ public class UserFriendDetailPanel extends JPanel {
 		lblCurrentStatusIcon.setBounds(51, 74, 10, 14);
 		btnStartChat.setBounds(385, 43, 89, 68);
 		btnUnfriend.setBounds(385, 9, 89, 23);
-		lblFriendName.setFont(new Font("Segoe UI Semibold", Font.BOLD, 20));
-		lblUsername.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
-		btnStartChat.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
-		btnUnfriend.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+
+		lblFriendName.setFont(AppService.getAppFont(24f));
+		lblUsername.setFont(AppService.getAppFont(11f));
+		btnStartChat.setFont(AppService.getAppFont(14f));
+		btnUnfriend.setFont(AppService.getAppFont(11f));
+
+	}
+
+	public Font getAppFont() {
+		try {
+			Font font = Font.createFont(Font.TRUETYPE_FONT,
+					UserFriendDetailPanel.class.getResourceAsStream("assets/fonts/Helvetica.ttf"));
+			return font;
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+
+		return null;
+
 	}
 
 	void setBackgroundColor() {
 		setBackground(null);
-		btnStartChat.setBorder(null);
 		btnUnfriend.setBackground(null);
-		btnStartChat.setForeground(Color.WHITE);
 	}
 
 	void setColor() {
@@ -160,12 +179,10 @@ public class UserFriendDetailPanel extends JPanel {
 				lblUsername.setText(friendUser.getUsername());
 
 				if (friendUser.getActive().equals("1")) {
-					lblCurrentStatusIcon.setIcon(
-							new ImageIcon("C:\\Users\\symbol\\Documents\\RAT\\alapp\\assets\\online_status.png"));
+					lblCurrentStatusIcon.setIcon(new ImageIcon("assets/online_status.png"));
 					lblCurrentStatus.setText("(online)");
 				} else {
-					lblCurrentStatusIcon.setIcon(
-							new ImageIcon("C:\\Users\\symbol\\Documents\\RAT\\alapp\\assets\\offline_status.png"));
+					lblCurrentStatusIcon.setIcon(new ImageIcon("assets/offline_status.png"));
 					lblCurrentStatus.setText("(offline)");
 				}
 			}
@@ -221,16 +238,16 @@ public class UserFriendDetailPanel extends JPanel {
 		/*
 		 * Check friend is busy or not
 		 */
-		if (friendUserPortService.getUserPort().getForId().equals(userPortService.getUserPort().getId())) {
-			/*
-			 * Friend is already waiting for this user Start chat as client
-			 */
-			chatPanel = new ChatPanel(CLIENT_CHAT_PANEL, friendUserPortService);
-		} else if (friendUserPortService.getUserPort().getForId().equals("0")) {
+		if (friendUserPortService.getUserPort().getForId() == null) {
 			/*
 			 * Friend is free and waiting for no one Start chat as server
 			 */
 			chatPanel = new ChatPanel(SERVER_CHAT_PANEL, userPortService);
+		} else if (friendUserPortService.getUserPort().getForId().equals(userPortService.getUserPort().getId())) {
+			/*
+			 * Friend is already waiting for this user Start chat as client
+			 */
+			chatPanel = new ChatPanel(CLIENT_CHAT_PANEL, friendUserPortService);
 		} else {
 			/*
 			 * Friend is busy with some one and Don't start the chat as friend is busy with

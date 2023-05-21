@@ -66,6 +66,7 @@ public class UserMenuBarPanel extends JPanel {
 		this.userChatSelectPanel = userChatSelectPanel;
 		invitationService = new InvitationService(frame, user);
 		connectionService = new ConnectionService(user);
+		
 		setLayout(null);
 		declareComponents();
 		addItem();
@@ -256,6 +257,8 @@ public class UserMenuBarPanel extends JPanel {
 			mnRecieved.setText("Received (" + receivedRequestListModel.getSize() + ")");
 			listRequestReceive.setModel(receivedRequestListModel);
 		} catch (Exception e) {
+			System.out.println("error in refresh Menu Bar");
+			System.out.println(e.getStackTrace());
 
 		}
 	}

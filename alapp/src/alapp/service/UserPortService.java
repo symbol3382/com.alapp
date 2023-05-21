@@ -123,6 +123,7 @@ public class UserPortService {
 				JOptionPane.showMessageDialog(null, "Can't set port number");
 			}
 		} catch (Exception e) {
+			System.out.println(e);
 			JOptionPane.showMessageDialog(null, "Can't set port number");
 		}
 	}
@@ -132,15 +133,17 @@ public class UserPortService {
 	 */
 
 	final private void getHostIp(JFrame frame) {
-		String getServerIpQuery = "SELECT `ip` FROM `user_port` WHERE id=10000000";
-		try {
-			preparedStatement = connection.prepareStatement(getServerIpQuery);
-			resultSet = preparedStatement.executeQuery();
-			resultSet.next();
-			userPort.setIp(resultSet.getString(1));
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(frame, "No server online");
-		}
+		userPort.setIp("127.0.0.1");
+		return;
+//		String getServerIpQuery = "SELECT `ip` FROM `user_port` WHERE id=10000000";
+//		try {
+//			preparedStatement = connection.prepareStatement(getServerIpQuery);
+//			resultSet = preparedStatement.executeQuery();
+//			resultSet.next();
+//			userPort.setIp(resultSet.getString(1));
+//		} catch (Exception e) {
+//			JOptionPane.showMessageDialog(frame, "No server online");
+//		}
 	}
 	/*
 	 * Initialization of port is end

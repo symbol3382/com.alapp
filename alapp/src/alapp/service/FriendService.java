@@ -29,7 +29,17 @@ public class FriendService {
 	public DefaultComboBoxModel<User> listFriends(JFrame frame){
 		DefaultComboBoxModel<User> dcbm = new DefaultComboBoxModel<User>();
 
-		String query = "SELECT `user_information`.`id`, `user_information`.`first_name`, `user_information`.`last_name`, `user_information`.`username`, `user_information`.`active` FROM `user_information` INNER JOIN `connections` ON `user_information`.`id` = `connections`.`to_id` WHERE `connections`.`from_id` = ?";
+		String query = "SELECT "
+				+ "`user_information`.`id`, "
+				+ "`user_information`.`first_name`, "
+				+ "`user_information`.`last_name`, "
+				+ "`user_information`.`username`, "
+				+ "`user_information`.`active` "
+				+ "FROM "
+					+ "`user_information` "
+				+ "INNER JOIN `connections` "
+				+ "ON `user_information`.`id` = `connections`.`to_id` "
+				+ "WHERE `connections`.`from_id` = ?";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -39,6 +49,7 @@ public class FriendService {
 				dcbm.addElement(new User(resultSet.getString(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),null,resultSet.getString(5),null));
 			}
 		}catch(Exception e) {
+			System.out.println(e);
 			JOptionPane.showMessageDialog(frame, "Can't Get Friend List", "Error", JOptionPane.INFORMATION_MESSAGE);
 		}
 		return dcbm;

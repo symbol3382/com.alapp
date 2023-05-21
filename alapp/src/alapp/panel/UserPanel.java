@@ -40,14 +40,15 @@ public class UserPanel {
 
 	private void initialize() {
 		userPortService = new UserPortService(user.getId(), frame);
+		System.out.println("'Initializing Port Number'");
 		userPortService.initializePortNumber();
+		System.out.println("Port initialized");
 		declareComponents();
 		setBounds();
 		setBackground();
 		setColor();
 
 		userService.setStatusActive(frame);
-
 
 		/*
 		 * Adding panel
